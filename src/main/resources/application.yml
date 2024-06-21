@@ -10,5 +10,7 @@ spring:
       max-lifetime: 59000
   jpa:
     hibernate:
-      ddl-auto: none
+      ddl-auto: update
     show-sql: true
+server:
+  port: 5050

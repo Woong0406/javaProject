@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <title>Example</title>
+  <script src="https://cdn.tiny.cloud/1/iyxky233pl4frm23rnlq6lu5et30bgsuvmn5ulpwsm30iz2f/tinymce/5/tinymce.min.js" referrerpolicy="origin"></script>
+  <script>
+    tinymce.init({
+      selector: 'textarea',
+      plugins: 'image code',
+      toolbar: 'undo redo | link image | code',
+      // 이미지 업로드 설정
+      images_upload_url: '/upload',
+      automatic_uploads: true,
+      file_picker_types: 'image',
+      // 이미지 파일 선택 기능 설정
+      file_picker_callback: function (cb, value, meta) {
+        var input = document.createElement('input');
+        input.setAttribute('type', 'file');
+        input.setAttribute('accept', 'image/*');
+
+        input.onchange = function () {
+          var file = this.files[0];
+
+          var reader = new FileReader();
+          reader.onload = function () {
+            var id = 'blobid' + (new Date()).getTime();
+            var blobCache = tinymce.activeEditor.editorUpload.blobCache;
+            var base64 = reader.result.split(',')[1];
+            var blobInfo = blobCache.create(id, file, base64);
+            blobCache.add(blobInfo);
+
+            cb(blobInfo.blobUri(), { title: file.name });
+          };
+          reader.readAsDataURL(file);
+        };
+
+        input.click();
+      }
+    });
+  </script>
+</head>
+<body>
+<form method="post" th:action="@{/submit}" enctype="multipart/form-data">
+  <textarea name="content"></textarea>
+  <button type="submit">Submit</button>
+</form>
+</body>
+</html>
+
