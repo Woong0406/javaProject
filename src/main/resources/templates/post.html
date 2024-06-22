@@ -2,45 +2,35 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
   <title>Example</title>
-  <script src="https://cdn.tiny.cloud/1/iyxky233pl4frm23rnlq6lu5et30bgsuvmn5ulpwsm30iz2f/tinymce/5/tinymce.min.js" referrerpolicy="origin"></script>
+  <script src="https://cdn.tiny.cloud/1/j86byx7kfcf74t341nj1gbyvl0ebdu261tck1fwxtxn3h0c8/tinymce/7/tinymce.min.js" referrerpolicy="origin"></script>
+
   <script>
     tinymce.init({
-      selector: 'textarea',
-      plugins: 'image code',
-      toolbar: 'undo redo | link image | code',
-      // 이미지 업로드 설정
-      images_upload_url: '/upload',
-      automatic_uploads: true,
-      file_picker_types: 'image',
-      // 이미지 파일 선택 기능 설정
-      file_picker_callback: function (cb, value, meta) {
-        var input = document.createElement('input');
-        input.setAttribute('type', 'file');
-        input.setAttribute('accept', 'image/*');
+      selector: "textarea", // TinyMCE를 적용할 textarea 요소의 선택자를 지정
+      plugins: "paste image imagetools", // 'paste', 'image', 'imagetools' 플러그인 추가
+      height: 500,
+      width: 900,
+      toolbar: "undo redo | styleselect | bold italic | alignleft aligncenter alignright alignjustify | outdent indent | image", // 'image' 버튼 툴바에 추가
+      paste_data_images: true, // 이미지 붙여넣기 설정 활성화
+      file_picker_types: 'image', // TinyMCE에서 이미지를 선택할 때, 이미지 파일만 선택 (옵션 : media, file 등)
+      images_upload_handler(blobInfo, success) { // 이미지를 업로드하는 핸들러 함수
+        // blobInfo : TinyMCE에서 이미지 업로드 시 사용되는 정보를 담고 있는 객체
+        const file = new File([blobInfo.blob()], blobInfo.filename());
+        const fileName = blobInfo.filename();
 
-        input.onchange = function () {
-          var file = this.files[0];
-
-          var reader = new FileReader();
-          reader.onload = function () {
-            var id = 'blobid' + (new Date()).getTime();
-            var blobCache = tinymce.activeEditor.editorUpload.blobCache;
-            var base64 = reader.result.split(',')[1];
-            var blobInfo = blobCache.create(id, file, base64);
-            blobCache.add(blobInfo);
-
-            cb(blobInfo.blobUri(), { title: file.name });
-          };
-          reader.readAsDataURL(file);
-        };
-
-        input.click();
+        if (fileName.includes("blobid")) {
+          success(URL.createObjectURL(file));
+        } else {
+          imageFiles.push(file);
+          success(URL.createObjectURL(file)); // Blob 객체의 임시 URL을 생성해 이미지 미리보기 적용
+        }
       }
     });
   </script>
 </head>
 <body>
-<form method="post" th:action="@{/submit}" enctype="multipart/form-data">
+<form method="post" th:action="@{/post}" enctype="multipart/form-data">
+  <input placeholder="제목을 입력하시오" name="title" type="text"></input>
   <textarea name="content"></textarea>
   <button type="submit">Submit</button>
 </form>

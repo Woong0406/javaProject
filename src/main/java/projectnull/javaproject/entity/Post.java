@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.UUID;
 
@@ -13,8 +14,8 @@ import java.util.UUID;
 @AllArgsConstructor
 @Builder
 @Entity
-@Table(name = "article")
-public class Article {
+@Table(name = "post")
+public class Post {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     UUID uuid = UUID.randomUUID();
