@@ -1,6 +1,7 @@
 package projectnull.javaproject.controller;
 
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -19,11 +20,8 @@ public class ImageController {
     public Map<String, Object> uploadImage(@RequestParam("file") MultipartFile file) {
         Map<String, Object> response = new HashMap<>();
         try {
-            String uploadDir = "images/";
+            String uploadDir = "/Users/dgsw8th11/javaProject/images/";
             File uploadDirFile = new File(uploadDir);
-            if (!uploadDirFile.exists()) {
-                uploadDirFile.mkdirs(); // 디렉토리가 존재하지 않으면 생성
-            }
 
             // 원본 파일명 가져오기
             String originalFilename = file.getOriginalFilename();
@@ -36,7 +34,7 @@ public class ImageController {
 
             // 이미지 URL 설정
             String imageUrl = "/" + filePath;
-            response.put("location", imageUrl);
+            response.put("location", "http://localhost:5050/image/" + uniqueFilename);
         } catch (IOException e) {
             e.printStackTrace();
             response.put("error", "Image upload failed");

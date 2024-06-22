@@ -20,6 +20,7 @@ public class Post {
     @GeneratedValue(strategy = GenerationType.UUID)
     UUID uuid = UUID.randomUUID();
     private String title;
+    @Column(length = 10000)
     private String content;
     @ManyToOne
     private User writer;
