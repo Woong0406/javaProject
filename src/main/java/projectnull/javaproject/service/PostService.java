@@ -62,4 +62,7 @@ public class PostService {
             PostDTO.builder().title(it.getTitle()).writer(it.getWriter().getNickName()).uuid(it.getUuid().toString()).build()
         ).collect(Collectors.toList());
     }
+    public void deletePost(String postUUID) {
+        postRepository.delete(postRepository.findPostByUuid(UUID.fromString(postUUID)).get());
+    }
 }
