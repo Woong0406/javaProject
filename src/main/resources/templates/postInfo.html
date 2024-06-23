@@ -12,7 +12,6 @@
       if (modify) {
         modify.href = "/post/" + postUUID + "?modify=true";
       }
-
       var comment = document.getElementById("comment");
       if (comment) {
         comment.action = "/comment/" + postUUID;
@@ -22,7 +21,15 @@
         like.href = "/like/" + postUUID;
       }
     }
+    function onDeleteClick() {
+      var currentUrl = window.location.href;
+      var path = currentUrl.split('/');
+      var postUUID = path[path.length - 1];
+      fetch('/post/' + postUUID, {
+        method: 'DELETE'
+      }).then(result => window.location.href = '/')
 
+    }
   </script>
 </head>
 <body onload="updateHref()">
@@ -37,6 +44,7 @@
 
 
 <a id="modify" th:if="${isWriter}">수정하기</a>
+<button onclick="onDeleteClick()" th:if="${isWriter}">삭제하기</button>
 <h2>댓글</h2>
 <table>
   <thead>
