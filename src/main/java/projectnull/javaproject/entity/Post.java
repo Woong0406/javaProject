@@ -1,24 +1,24 @@
 package projectnull.javaproject.entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.UUID;
 
 @Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
 @Entity
-@Table(name = "article")
-public class Article {
+@Table(name = "post")
+public class Post extends BaseEntity{
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     UUID uuid = UUID.randomUUID();
     private String title;
+    @Column(length = 10000)
     private String content;
     @ManyToOne
     private User writer;

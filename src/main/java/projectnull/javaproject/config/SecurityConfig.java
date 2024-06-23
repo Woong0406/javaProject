@@ -16,7 +16,8 @@ public class SecurityConfig {
 
         http
                 .authorizeHttpRequests((auth) -> auth
-                        .requestMatchers("/", "/login", "/sign-up").permitAll()
+                        .requestMatchers("/post").authenticated()
+                        .requestMatchers("/", "/login", "/sign-up", "/post/**", "/image/**").permitAll()
                         .anyRequest().authenticated()
                 )
                 .formLogin((auth) -> auth.loginPage("/login")
@@ -24,6 +25,8 @@ public class SecurityConfig {
                         .permitAll()
                         .usernameParameter("username")
                 )
+                .logout((auth) -> auth.logoutUrl("/logout")
+                        .logoutSuccessUrl("/"))
                 .csrf((auth) -> auth.disable());
         return http.build();
     }
