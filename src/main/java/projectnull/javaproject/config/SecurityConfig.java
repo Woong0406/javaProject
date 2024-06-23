@@ -25,6 +25,8 @@ public class SecurityConfig {
                         .permitAll()
                         .usernameParameter("username")
                 )
+                .logout((auth) -> auth.logoutUrl("/logout")
+                        .logoutSuccessUrl("/"))
                 .csrf((auth) -> auth.disable());
         return http.build();
     }

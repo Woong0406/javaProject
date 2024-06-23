@@ -22,6 +22,17 @@ public class PostService {
     private UserRepository userRepository;
 
     public Post postPost(PostDTO dto) {
+        if (dto.getUuid() != null) {
+            Optional<Post> post = postRepository.findPostByUuid(UUID.fromString(dto.getUuid()));
+            if (post.isPresent()) {
+                if (((CustomUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUser().getUuid().equals(post.get().getWriter().getUuid())) {
+                    post.get().setTitle(dto.getTitle());
+                    post.get().setContent(dto.getContent());
+                }
+            }
+
+            return postRepository.save(post.get());
+        }
         CustomUserDetails userDetails = (CustomUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         //post 엔티티를 만들어서 저장시키는 로직
         Post post = Post.builder()
@@ -35,9 +46,12 @@ public class PostService {
         Optional<Post> post = postRepository.findPostByUuid(UUID.fromString(postUUID));
         if (post.isPresent()) {
             return PostDTO.builder()
+                    .uuid(post.get().getUuid().toString())
                     .title(post.get().getTitle())
                     .content(post.get().getContent())
                     .writer(post.get().getWriter().getNickName())
+                    .regDate(post.get().getRegDate())
+                    .modDate(post.get().getModDate())
                     .build();
         }
         return null;

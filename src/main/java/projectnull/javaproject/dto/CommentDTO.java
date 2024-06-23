@@ -11,9 +11,9 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class PostDTO {
+public class CommentDTO {
     private String uuid = null;
-    private String title;
+    private String post;
     private String content;
     private String writer = null;
     private LocalDateTime regDate;
