@@ -1,6 +1,7 @@
 package projectnull.javaproject.controller;
 //히히 주석
 //히히 또 주석
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -34,6 +35,11 @@ public class PostController {
     @PostMapping("/post")
     public String postPost(PostDTO dto) {
         postService.postPost(dto);
+        return "redirect:/";
+    }
+    @PutMapping("/post/{postUUID}")
+    public String putPost(@PathVariable String postUUID, PostDTO dto) {
+        postService.putPost(postUUID, dto);
         return "redirect:/";
     }
     @GetMapping("/post/{postUUID}")
