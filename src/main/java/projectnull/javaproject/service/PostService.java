@@ -20,19 +20,19 @@ public class PostService {
     private PostRepository postRepository;
     @Autowired
     private UserRepository userRepository;
+    public Post putPost(String postUUID, PostDTO dto) {
+        Optional<Post> post = postRepository.findPostByUuid(UUID.fromString(postUUID));
+        if (post.isPresent()) {
+            if (((CustomUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUser().getUuid().equals(post.get().getWriter().getUuid())) {
+                post.get().setTitle(dto.getTitle());
+                post.get().setContent(dto.getContent());
+            }
+        }
+
+        return postRepository.save(post.get());
+    }
 
     public Post postPost(PostDTO dto) {
-        if (dto.getUuid() != null) {
-            Optional<Post> post = postRepository.findPostByUuid(UUID.fromString(dto.getUuid()));
-            if (post.isPresent()) {
-                if (((CustomUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUser().getUuid().equals(post.get().getWriter().getUuid())) {
-                    post.get().setTitle(dto.getTitle());
-                    post.get().setContent(dto.getContent());
-                }
-            }
-
-            return postRepository.save(post.get());
-        }
         CustomUserDetails userDetails = (CustomUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         //post 엔티티를 만들어서 저장시키는 로직
         Post post = Post.builder()

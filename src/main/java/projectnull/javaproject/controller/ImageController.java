@@ -15,6 +15,7 @@ import java.util.UUID;
 
 @Controller
 public class ImageController {
+    // todo 수정하세요
     @PostMapping("/image")
     @ResponseBody
     public Map<String, Object> uploadImage(@RequestParam("file") MultipartFile file) {
