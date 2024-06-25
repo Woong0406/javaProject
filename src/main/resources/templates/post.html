@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Example</title>
+  <script src="https://cdn.tiny.cloud/1/j86byx7kfcf74t341nj1gbyvl0ebdu261tck1fwxtxn3h0c8/tinymce/7/tinymce.min.js" referrerpolicy="origin"></script>
+  <style>
+    body {
+      background-image: url('http://localhost:5050/images/gain.jpg');
+      background-repeat: repeat;
+      background-size: 400px 200px;
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-height: 100vh;
+      color: #333;
+    }
+
+    form {
+      background-color: #ffffff;
+      padding: 20px 40px;
+      border-radius: 10px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      width: 500px;
+      text-align: center;
+    }
+
+    input[type="text"], textarea {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 20px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      box-sizing: border-box;
+      font-size: 16px;
+    }
+
+    button {
+      width: 100%;
+      padding: 10px;
+      background-color: #007BFF;
+      border: none;
+      border-radius: 5px;
+      color: white;
+      font-size: 16px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    button:hover {
+      background-color: #0056b3;
+    }
+  </style>
+  <script>
+    tinymce.init({
+      selector: 'textarea',
+      plugins: 'image code',
+      toolbar: 'undo redo | link image | code',
+      images_upload_url: '/image',
+      automatic_uploads: true,
+      file_picker_types: 'image',
+      convert_urls: false,
+      file_picker_callback: function (cb, value, meta) {
+        var input = document.createElement('input');
+        input.setAttribute('type', 'file');
+        input.setAttribute('accept', 'image/*');
+        input.onchange = function () {
+          var file = this.files[0];
+          var reader = new FileReader();
+          reader.onload = function () {
+            var id = 'blobid' + (new Date()).getTime();
+            var blobCache = tinymce.activeEditor.editorUpload.blobCache;
+            var base64 = reader.result.split(',')[1];
+            var blobInfo = blobCache.create(id, file, base64);
+            blobCache.add(blobInfo);
+            cb(blobInfo.blobUri(), { title: file.name });
+          };
+          reader.readAsDataURL(file);
+        };
+        input.click();
+      }
+    });
+  </script>
+</head>
+<body>
+<form method="post" th:action="@{/post}" enctype="multipart/form-data">
+  <input placeholder="제목을 입력하시오" name="title" type="text">
+  <textarea name="content"></textarea>
+  <button type="submit">Submit</button>
+</form>
+</body>
+</html>

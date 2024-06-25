@@ -1,0 +1,20 @@
+spring:
+  application:
+    name: javaProject
+  datasource:
+    driver-class-name: org.mariadb.jdbc.Driver
+    url: ${DATABASE_URL}
+    username: ${DATABASE_USERNAME}
+    password: ${DATABASE_PASSWORD}
+    hikari:
+      max-lifetime: 59000
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+  servlet:
+    multipart:
+      max-request-size: 500MB
+      max-file-size: 500MB
+server:
+  port: 5050
